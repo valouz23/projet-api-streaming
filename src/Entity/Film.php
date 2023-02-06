@@ -9,7 +9,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 
-#[ApiResource]
+#[ApiResource(
+    paginationItemsPerPage: 5,
+)]
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 class Film
 {
@@ -27,7 +29,7 @@ class Film
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $release_date = null;
 
-    #[ORM\ManyToMany(targetEntity: platform::class, inversedBy: 'films')]
+    #[ORM\ManyToMany(targetEntity: Platform::class, inversedBy: 'films')]
     private Collection $platforms;
 
     public function __construct()
@@ -84,7 +86,7 @@ class Film
         return $this->platforms;
     }
 
-    public function addPlatform(platform $platform): self
+    public function addPlatform(Platform $platform): self
     {
         if (!$this->platforms->contains($platform)) {
             $this->platforms->add($platform);
@@ -93,7 +95,7 @@ class Film
         return $this;
     }
 
-    public function removePlatform(platform $platform): self
+    public function removePlatform(Platform $platform): self
     {
         $this->platforms->removeElement($platform);
 
