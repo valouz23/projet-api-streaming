@@ -8,10 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 
 #[ApiResource(
     paginationItemsPerPage: 5,
+    order: ['release_date' => 'DESC'],
 )]
+#[ApiFilter(SearchFilter::class, properties:["category" => 'partial'])]
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 class Film
 {
@@ -20,6 +25,7 @@ class Film
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 

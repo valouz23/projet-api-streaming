@@ -6,10 +6,18 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Film;
 use App\Entity\Platform;
+use App\Entity\User;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $passwordHasher;
+    public function __construct(UserPasswordHasherInterface $passwordHasher){
+        $this->passwordHasher = $passwordHasher;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -50,7 +58,18 @@ class AppFixtures extends Fixture
             $manager->persist($film);
 
         }
+        $plainPassword = 'password';
+        $user = new User();
+        $user->setPseudo('ValouUser');
+        $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
+        $manager->persist($user);
 
+        $plainPassword = 'admin';
+        $admin = new User();
+        $admin->setPseudo('ValouAdmin');
+        $admin->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
+        $admin->setRoles(['ROLE_ADMIN']);
+        $manager->persist($admin);
         $manager->flush();
     }
 }
