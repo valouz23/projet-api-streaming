@@ -8,22 +8,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['group' => ['read:platform']],
+    denormalizationContext: ['group' => ['write:platform']],
+)]
 #[ORM\Entity(repositoryClass: PlatformRepository::class)]
 class Platform
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:platform'])]
     private ?int $id = null;
 
     #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
+    #[Groups(['read:platform', 'write:platform'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'platforms')]
+    #[Groups(['read:platform', 'write:platform'])]
     private Collection $films;
 
     public function __construct()

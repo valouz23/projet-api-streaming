@@ -11,10 +11,14 @@ use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ApiResource(
     paginationItemsPerPage: 5,
     order: ['release_date' => 'DESC'],
+    normalizationContext: ['group' => ['read:film']],
+    denormalizationContext: ['group' => ['write:film']],
 )]
 #[ApiFilter(SearchFilter::class, properties:["category" => 'partial'])]
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
@@ -23,19 +27,26 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:film'])]
     private ?int $id = null;
 
     #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
+    #[Groups(['read:film', 'write:film'])]
     private ?string $title = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
+    #[Groups(['read:film'], 'write:film')]
     private ?string $category = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['read:film'], 'write:film')]
     private ?\DateTimeInterface $release_date = null;
 
     #[ORM\ManyToMany(targetEntity: Platform::class, inversedBy: 'films')]
+    #[Groups(['read:film', 'write:film'])]
     private Collection $platforms;
 
     public function __construct()
