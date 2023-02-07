@@ -1,12 +1,16 @@
 api_platform:
-    title: 'API BLOG'
-    description: 'UNE API POUR MES FILMS'
-    formats:
-      jsonld:
-          mime_types: ["apllication/ld+json"]
-
-      json:
-          mime_types: ["apllication/json"]
+  swagger:
+    api_keys:
+      JWT:
+        name: Authorization
+        type: header
+  title: 'API BLOG'
+  description: 'UNE API POUR MES FILMS'
+  formats:
+    jsonld:
+        mime_types: ["apllication/ld+json"]
+    json:
+        mime_types: ["apllication/json"]
       
-      html:
-          mime_types: ["text/html"]
+    html:
+        mime_types: ["text/html"]
